@@ -57,3 +57,4 @@ tap:
     view:
       ingress_domain: tap-view.tapmc.aws.warroyo.com
       ingress_issuer: letsencrypt-prod
+    build:

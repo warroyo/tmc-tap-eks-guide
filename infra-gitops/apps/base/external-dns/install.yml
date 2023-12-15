@@ -30,6 +30,7 @@ spec:
     - contour-httpproxy
     - ingress
     provider: aws
+    txtOwnerId: ${cluster_name}
     serviceAccount:
       annotations: 
         eks.amazonaws.com/role-arn: arn:aws:iam::074754820263:role/tap-dns-role

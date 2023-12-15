@@ -6,5 +6,4 @@ generatorOptions:
 resources:
 - ../../../base/cluster-name-secret/
 - ../../../base/tap-overlays
-- ../../../base/external-dns
 - initial-namespaces.yml

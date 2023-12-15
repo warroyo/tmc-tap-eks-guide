@@ -29,6 +29,9 @@ spec:
   dependsOn:
     - name: group-apps-pre
   postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-name-secret
     substitute:
       cluster_group: "tap-mc"
   sourceRef:
