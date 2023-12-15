@@ -5,4 +5,4 @@ generatorOptions:
 
 resources:
 - ../../../base/cluster-issuers
-- ../.././base/external-dns
+- ../../../base/external-dns
