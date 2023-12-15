@@ -13,6 +13,6 @@ stringData:
     #@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata": {"name": "cert-manager" }}), expects=1
 
     ---
-    metadata::
+    metadata:
       annotations:
         eks.amazonaws.com/role-arn: arn:aws:iam::074754820263:role/tap-dns-role
