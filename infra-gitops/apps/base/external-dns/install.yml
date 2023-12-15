@@ -28,6 +28,7 @@ spec:
   values: 
     sources:
     - contour-httpproxy
+    - ingress
     provider: aws
     txtOwnerId: ${cluster_name}
     serviceAccount:

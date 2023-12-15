@@ -1,15 +1,21 @@
 #@ load("@ytt:data", "data")
 
+#@ view_agent = "eks."+ data.values.clusters.view.credName + "." + data.values.clusters.view.region + "." + data.values.clusters.view.name
+
 fullName:
   name: #@ data.values.tap.name
 spec:
   clusterPackageData:
   - clusterFullName:
       managementClusterName: eks
-      name: #@ data.values.clusters.view.name
+      name: #@ view_agent
       provisionerName: eks
       orgId: #@ data.values.orgId
     inlineValues:
+      package_overlays:
+      - name: cert-manager
+        secrets:
+          - name: cert-man-sa-arn
       excluded_packages:
       - fluxcd.source.controller.tanzu.vmware.com
       appliveview:

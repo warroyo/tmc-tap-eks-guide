@@ -1,2 +1,5 @@
 .vscode
 sensitive-values.yml
+generated/*.yaml
+generated/*.yml
+generated/*.json
