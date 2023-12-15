@@ -1,0 +1,25 @@
+#@ load("@ytt:data", "data")
+#@ profile = data.values.profile
+#@ values = getattr(data.values.clusters, profile)
+fullName:
+  credentialName: #@ values.credName
+  name: #@ values.name
+  region: #@ values.region
+spec:
+  clusterGroupName: #@ values.cgName
+  config:
+    logging:
+      apiServer: true
+      authenticator: true
+    version: "1.28"
+    roleArn: #@ values.clusterRoleArn
+    vpc:
+      enablePublicAccess: true
+      publicAccessCidrs:
+      - 0.0.0.0/0
+      subnetIds: #@ values.subnetIds
+type:
+  kind: EksCluster
+  package: vmware.tanzu.manage.v1alpha1.ekscluster
+  version: v1alpha1
+

@@ -1,0 +1,59 @@
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: group-apps-pre
+  namespace: tanzu-continuousdelivery-resources
+spec:
+  interval: 10m0s
+  path: ./flux/apps/clustergroups/tap-mc/pre
+  prune: true
+  postBuild:
+    substitute:
+      cluster_group: "tap-mc"
+  sourceRef:
+    kind: GitRepository
+    namespace: tanzu-continuousdelivery-resources
+    name: tmc-tap
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: group-apps-post
+  namespace: tanzu-continuousdelivery-resources
+spec:
+  interval: 10m0s
+  path: ./flux/apps/clustergroups/tap-mc/post
+  prune: true
+  dependsOn:
+    - name: group-apps-pre
+  postBuild:
+    substitute:
+      cluster_group: "tap-mc"
+  sourceRef:
+    kind: GitRepository
+    namespace: tanzu-continuousdelivery-resources
+    name: tmc-tap
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: clustergroup-gitops
+  namespace: tanzu-continuousdelivery-resources
+spec:
+  dependsOn:
+  - name: group-apps-post
+    namespace: tanzu-continuousdelivery-resources
+  interval: 10m0s
+  path: flux/clustergroups/common/per-cluster
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-name-secret
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    namespace: tanzu-continuousdelivery-resources
+    name: tmc-tap

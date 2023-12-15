@@ -1,0 +1,27 @@
+#@ load("@ytt:data", "data")
+#@ profile = data.values.profile
+#@ values = getattr(data.values.clusters, profile)
+fullName:
+  eksClusterName: #@ values.name
+  name: default-node-pool
+  credentialName: #@ values.credName
+  region: #@ values.region
+spec:
+  amiType: AL2_x86_64
+  capacityType: ON_DEMAND
+  instanceTypes:
+  - #@ values.nodepool.instanceType
+  roleArn: #@ values.nodepool.roleArn
+  rootDiskSize: #@ values.nodepool.diskSize
+  scalingConfig:
+    desiredSize: #@ values.nodepool.replicas
+    maxSize: #@ values.nodepool.replicas
+    minSize: #@ values.nodepool.replicas
+  subnetIds: #@ values.subnetIds
+  updateConfig:
+    maxUnavailableNodes: "1"
+type:
+  kind: Nodepool
+  package: vmware.tanzu.manage.v1alpha1.ekscluster.nodepool
+  version: v1alpha1
+

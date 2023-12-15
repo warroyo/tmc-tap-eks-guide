@@ -1,0 +1,23 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  labels:
+    app.kubernetes.io/part-of: tanzu-java-web-app-tsm
+    apps.tanzu.vmware.com/workload-type: server
+    apps.tanzu.vmware.com/has-tests: "true"
+  name: tanzu-java-web-app-tsm
+  namespace: dev
+spec:
+  source:
+    git:
+      ref:
+        branch: main
+      url: https://github.com/warroyo/tanzu-java-web-app-gitops
+  params:
+    - name: annotations
+      value:
+        autoscaling.knative.dev/minScale: "1"
+    - name: gitops_repository
+      value: https://github.com/warroyo/tmc-tap
+    - name: gitops_branch
+      value: main

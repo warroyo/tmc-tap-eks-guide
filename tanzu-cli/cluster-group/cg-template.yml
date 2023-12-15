@@ -1,0 +1,4 @@
+#@ load("@ytt:data", "data")
+---
+fullName:
+  name: #@ data.values.clusterGroupName

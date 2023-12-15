@@ -1,0 +1,30 @@
+apiVersion: carto.run/v1alpha1
+kind: Deliverable
+metadata:
+  name: tanzu-java-web-app
+  namespace: dev
+  labels:
+    app.kubernetes.io/part-of: tanzu-java-web-app
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: web
+    kustomize.toolkit.fluxcd.io/name: cluster-gitops
+    kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+    app.kubernetes.io/component: deliverable
+    app.tanzu.vmware.com/deliverable-type: web
+    carto.run/cluster-template-name: external-deliverable-template
+    carto.run/resource-name: deliverable
+    carto.run/supply-chain-name: source-test-scan-to-url
+    carto.run/template-kind: ClusterTemplate
+    carto.run/template-lifecycle: mutable
+    carto.run/workload-name: tanzu-java-web-app
+    carto.run/workload-namespace: dev
+spec:
+  params:
+  - name: gitops_ssh_secret
+    value: github-warroyo-secret
+  source:
+    git:
+      url: https://github.com/warroyo/tmc-tap.git
+      ref:
+        branch: main
+    subPath: config/dev/tanzu-java-web-app

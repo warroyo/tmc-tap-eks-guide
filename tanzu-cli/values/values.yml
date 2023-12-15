@@ -1,0 +1,59 @@
+clusterGroupName: tap-mc
+gitrepo: https://github.com/warroyo/tmc-tap-quickstart
+orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+clusters:
+  view:
+    credName: eks-warroyo2
+    name: tap-view
+    region: us-west-2
+    cgName: tap-mc
+    clusterRoleArn: arn:aws:iam::074754820263:role/control-plane.5733506324977179756.eks.tmc.cloud.vmware.com
+    subnetIds:
+    - subnet-1c116c57
+    - subnet-efa6eac7
+    - subnet-55a1f12c
+    - subnet-6594b73f
+    nodepool:
+      roleArn: arn:aws:iam::074754820263:role/worker.5733506324977179756.eks.tmc.cloud.vmware.com
+      instanceType: c5.2xlarge
+      diskSize: 125
+      replicas: 3
+  build:  
+    credName: eks-warroyo2
+    name: tap-build
+    region: us-west-2
+    cgName: tap-mc
+    clusterRoleArn: arn:aws:iam::074754820263:role/control-plane.5733506324977179756.eks.tmc.cloud.vmware.com
+    subnetIds:
+    - subnet-1c116c57
+    - subnet-efa6eac7
+    - subnet-55a1f12c
+    - subnet-6594b73f
+    nodepool:
+      roleArn: arn:aws:iam::074754820263:role/worker.5733506324977179756.eks.tmc.cloud.vmware.com
+      instanceType: c5.2xlarge
+      diskSize: 125
+      replicas: 4
+  run:
+    credName: eks-warroyo2
+    name: tap-run
+    region: us-west-2
+    cgName: tap-mc
+    clusterRoleArn: arn:aws:iam::074754820263:role/control-plane.5733506324977179756.eks.tmc.cloud.vmware.com
+    subnetIds:
+    - subnet-1c116c57
+    - subnet-efa6eac7
+    - subnet-55a1f12c
+    - subnet-6594b73f
+    nodepool:
+      roleArn: arn:aws:iam::074754820263:role/worker.5733506324977179756.eks.tmc.cloud.vmware.com
+      instanceType: c5.2xlarge
+      diskSize: 125
+      replicas: 3
+tap:
+  version:  1.7.0
+  name: eks-tap
+  profiles:
+    view:
+      ingress_domain: tap-view.tapmc.aws.warroyo.com
+      ingress_issuer: letsencrypt-prod
