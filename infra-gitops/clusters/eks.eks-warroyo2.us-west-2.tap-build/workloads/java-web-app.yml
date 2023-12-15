@@ -18,6 +18,6 @@ spec:
       value:
         autoscaling.knative.dev/minScale: "1"
     - name: gitops_repository
-      value: https://github.com/warroyo/tmc-tap
+      value: https://github.com/warroyo/tmc-tap-quickstart
     - name: gitops_branch
       value: main

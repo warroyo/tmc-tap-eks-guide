@@ -5,7 +5,7 @@ metadata:
   namespace: tanzu-continuousdelivery-resources
 spec:
   interval: 1m
-  path: flux/clusters/${cluster_name}
+  path: infra-gitops/clusters/${cluster_name}
   prune: true
   postBuild:
     substitute:
@@ -13,5 +13,5 @@ spec:
   sourceRef:
     kind: GitRepository
     namespace: tanzu-continuousdelivery-resources
-    name: tmc-tap
+    name: infra-gitops
 

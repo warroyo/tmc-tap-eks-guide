@@ -7,7 +7,7 @@ metadata:
   namespace: tanzu-continuousdelivery-resources
 spec:
   interval: 10m0s
-  path: ./flux/apps/clustergroups/tap-mc/pre
+  path: ./infra-gitops/apps/clustergroups/tap-mc/pre
   prune: true
   postBuild:
     substitute:
@@ -15,7 +15,7 @@ spec:
   sourceRef:
     kind: GitRepository
     namespace: tanzu-continuousdelivery-resources
-    name: tmc-tap
+    name: infra-gitops
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
@@ -24,7 +24,7 @@ metadata:
   namespace: tanzu-continuousdelivery-resources
 spec:
   interval: 10m0s
-  path: ./flux/apps/clustergroups/tap-mc/post
+  path: ./infra-gitops/apps/clustergroups/tap-mc/post
   prune: true
   dependsOn:
     - name: group-apps-pre
@@ -34,7 +34,7 @@ spec:
   sourceRef:
     kind: GitRepository
     namespace: tanzu-continuousdelivery-resources
-    name: tmc-tap
+    name: infra-gitops
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
@@ -47,7 +47,7 @@ spec:
   - name: group-apps-post
     namespace: tanzu-continuousdelivery-resources
   interval: 10m0s
-  path: flux/clustergroups/common/per-cluster
+  path: infra-gitops/clustergroups/common/per-cluster
   postBuild:
     substituteFrom:
       - kind: Secret
@@ -56,4 +56,4 @@ spec:
   sourceRef:
     kind: GitRepository
     namespace: tanzu-continuousdelivery-resources
-    name: tmc-tap
+    name: infra-gitops
