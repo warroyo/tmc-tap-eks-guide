@@ -14,6 +14,7 @@ stringData:
 
     ---
     metadata:
+      #@overlay/match missing_ok=True
       annotations:
         #@overlay/match missing_ok=True
         eks.amazonaws.com/role-arn: arn:aws:iam::074754820263:role/tap-dns-role
