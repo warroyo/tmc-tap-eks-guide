@@ -15,4 +15,4 @@ stringData:
     ---
     metadata::
       annotations:
-        eks.amazonaws.com/role-arn: #@ data.values.dnsRoleArn
+        eks.amazonaws.com/role-arn: arn:aws:iam::074754820263:role/tap-dns-role

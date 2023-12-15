@@ -39,6 +39,14 @@ tanzu tmc ekscluster create -f <profile-name>-cluster.yaml
 tanzu tmc ekscluster nodepool create -f <profile-name>-np.yaml                                                                 
 ```
 
+## asscoiate the OIDC url with a provider
+
+run this for all three clusters
+
+```
+eksctl utils associate-iam-oidc-provider --cluster <cluster-name> --approve
+```
+
 ## Create ECR repos 
 
 [official docs](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.7/tap/install-aws-resources.html#create-the-workload-container-repositories-5)
@@ -303,7 +311,7 @@ aws iam get-role --role-name tap-dns-role --query Role.Arn --output text
 ```
 
 update the role arn in the external dns helm chart install. This is in `infra-gitops/apps/base/external-dns/install.yml`
-Update the cert manager role arn in the values file `tanzu-cli/values.yml`
+Update the cert manager role arn in the values file `infra-gitops/apps/base/tap-overlays/cert-manager-arn.yml`
 
 ## Setup a hosted zone
 
