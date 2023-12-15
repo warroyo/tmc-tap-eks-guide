@@ -1,0 +1,400 @@
+✔  Get tap solution succeeded
+fullName:
+  name: costco-tap
+  orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+meta:
+  creationTime: "2023-12-06T17:13:07.328048Z"
+  generation: "4"
+  resourceVersion: "21351"
+  uid: tapsol:01HH01WXFFKDNV1WJ9WHE1SEA5
+  updateTime: "2023-12-15T21:36:40.748203Z"
+spec:
+  clusterPackageData:
+  - clusterCaCert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQWRLZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJek1USXhNakF3TVRBek1sb1hEVE16TVRJd09UQXdNVFV6TWxvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTDh4CjZ0NDhxSnM2SHo0TjYvZFZzMC9zRmJKbGlPTHVzYlZWbGlaNGpwUDArUEsvTXlLVWtHcy9zUVkzQUlXRDlUY2UKTUpLTGxjbm9VcU8xUVF1eGx0VXNzcndBSXQwZEZHT0haV3N4cFZJWHdMUllqT3I4M1JMWU5GQ2lId0Q2RnFSSApCUllXQmJQL0JvaG1rU1hSWFVtSk5PN2pxdmxyRzVuVUNTemRpZzdPd0Z6dEIxRjZSMU8wMjJDdGQ5b3NGVG1UClNIdityU1JRUG95OVlJNkpSa21DcVJmcW5wWDV4SHdvY2hYLzc1NkJLT3owSEFtYWYwUnowTnFyVTVlQlFJOEIKV1AraGR6Szlpb3JzeFB2NmJTNmNXamxBS0tKajVIQndmK2RvZnczdjhVSjdBdEFMcnA5MHc3M3JUdlVjYjA5UAozejBLZGVEN3R0U1dBalpUN3VNQ0F3RUFBYU5GTUVNd0RnWURWUjBQQVFIL0JBUURBZ0trTUJJR0ExVWRFd0VCCi93UUlNQVlCQWY4Q0FRQXdIUVlEVlIwT0JCWUVGSnZaK24zWnhQcjQ0dmUwQk5rOVJpLzl3U0NrTUEwR0NTcUcKU0liM0RRRUJDd1VBQTRJQkFRQjFURkZxTmxJNXlGa3lzTVJxOFZJaXFzUEpBSlpqZGdXMDRsN2t4dnFUL3V0dApvSU1lakFaZTArSC9DOEZJa2VsWmExYmVGZnEwbjAwdXFIbDZJc01JTmcrTHd6V3BYOE8ycDVBK1ZheXRtbnBHCnh3VzJHUUUwaXdob2NaaGFTMzhHZ0M1ckRmVzZWWG1NTW9KckNuR3IzUWdFV3kvS2pmVGFlUUs3NWhGSUtkbzEKRHFRclpVTTI1a29UK3FjQVg0LzdabjNGYUVtbmExV3drejNvK2Jic2c0bjg2OW5vOVVFbHMwSmlXc1JvcWhDMQpTLy92aGJTcU9YSGFzRjBJbVhFWU5JdHMrRnlYYnRzNU80UkxpRVMwVnVteDRHTUZXcEI4SFdJVCtaRU8rL0g4CkFBeVpkNEJBOGVHTUtmeDNLeVBLZmxRdzhHS1dtRGlXMUtmcUFJT1oKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    clusterFullName:
+      managementClusterName: costco-poc
+      name: tap-run-tsm
+      orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+      provisionerName: lab
+    clusterUid: c:01HHDP1AHYAQ2YZTYX65FG838C
+    clusterUrl: https://10.214.167.184:6443
+    inlineValues:
+      ceip_policy_disclosed: true
+      deployed_through_tmc: true
+      excluded_packages:
+      - fluxcd.source.controller.tanzu.vmware.com
+      namespace_provisioner:
+        additional_sources:
+        - git:
+            ref: origin/main
+            subPath: ns-provisioner/clusters/tap-run-tsm/config
+            url: https://github.com/warroyo/tmc-tap
+        controller: false
+        default_parameters:
+          supply_chain_service_account:
+            secrets:
+            - github-warroyo-secret
+        gitops_install:
+          ref: origin/main
+          subPath: ns-provisioner/clusters/tap-run-tsm/namespaces
+          url: https://github.com/warroyo/tmc-tap
+      package_overlays:
+      - name: cert-manager
+        secrets:
+        - name: cert-man-recursive-ns
+      profile: run
+      shared:
+        ingress_domain: onprem.ct-tap.azure.warroyo.com
+        ingress_issuer: letsencrypt-prod
+      tap_telemetry:
+        customer_entitlement_account_number: ""
+    packageRef:
+      packageMetadataName: tap.tanzu.vmware.com
+      versionSelection:
+        constraints: 1.7.0
+    tapProfile: run
+  - clusterCaCert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQWRLZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJek1USXdOakUyTkRFeE5Wb1hEVE16TVRJd016RTJORFl4TlZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBSzMrCkJuZkNBNkFXREEzZ3ZnM3d4R0x1czFBOGt1dE5pdndINHlEeE52NlEwVi8yTU9LZXloSVptcmxTaC9jVnpsVHQKY0xYa29OYU1KN0FTNW9yM2ZpcWtPcCtEMjF1OTIvNVVqZGNqYmN5S01SOVFKRzJXNnN1TTNMSXJVYzkwQ2g4dAovclpweGFYekhvSVloN1VVVUNuRUlHK1J6THIzaDVxc3MrNzFQaExTL3pNUUU5TmdkS2tCYzl6YlBmWXVMajBrCitqQzJOVjc1bXRwc1haN3VnSmd6Q0NEZ1JWSWJNTFVVd2c3RGloWGVUQURrWkZUQzFCeU93N3RzTFV4Q2pxYU8KejhkR25GQkN1TThYZjRsYnFaNU95T1gyd3lTcDRzWi9OK1NqVmJqSUZXYlIxVFVodHRvelh1bk8wbWJGdW5kVApBbm5TN0JRNWxMUFovQWt2WDYwQ0F3RUFBYU5GTUVNd0RnWURWUjBQQVFIL0JBUURBZ0trTUJJR0ExVWRFd0VCCi93UUlNQVlCQWY4Q0FRQXdIUVlEVlIwT0JCWUVGTERPRGNVbVVnSDhZUkdjVnRQenhRSlJPVlFOTUEwR0NTcUcKU0liM0RRRUJDd1VBQTRJQkFRQXJPSFRySzlRNFk0Zm9yZjc0ekluYkZrcytTdkN4VGF6N3hXMFlTeVlZTUFQWQpZVW1hVWp6L3NtWFNGMVp0NGxkOVN2bUx1WEZkdkZRV0pocFgybVBGK1JhdVZKLzVURUloNWthaVhzbU5ZbTU3CkNHNmMxRUVBR25ZRlZaQW4vYmM1OVJma040d0RwdTViUE9sTFhIYWp6ZmZ5V1hkU0MxdHF1V1FYQWVoY01KK0UKZWZFdXdqU0NXYnQyb0ZuR1lsOTYzd0wwRGR2NWZuYkFrS0NoVHYwTFZjL1VWc1lWYW1SbzU2eTNjczNKMjN0SApsQ2VTQ043cDRBdEF2M2tRc1djTGFHYWt2MTcyb3AyRzY4R3dlRWF4eXVhcHVNR1dlSnpwZm9wWHJtSWMyeE5XCjlucWNhaXNUeVR0SFlQVjNzdmpFTUpaTlEwQlJXYmlMTDUzSTBlTVcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    clusterFullName:
+      managementClusterName: costco-poc
+      name: tap-view
+      orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+      provisionerName: lab
+    clusterUid: c:01HH00AQP12M7QPTBWYTBZ6149
+    clusterUrl: https://10.214.167.179:6443
+    inlineValues:
+      appliveview:
+        ingressEnabled: true
+      ceip_policy_disclosed: true
+      deployed_through_tmc: true
+      metadata_store:
+        ingress_issuer: tap-ingress-selfsigned
+        ns_for_export_app_cert: '*'
+      package_overlays:
+      - name: cert-manager
+        secrets:
+        - name: cert-man-recursive-ns
+      profile: view
+      shared:
+        ingress_domain: tap-view.ct-tap.azure.warroyo.com
+        ingress_issuer: letsencrypt-prod
+      tap_gui:
+        app_config:
+          auth:
+            allowGuestAccess: true
+      tap_telemetry:
+        customer_entitlement_account_number: ""
+    packageRef:
+      packageMetadataName: tap.tanzu.vmware.com
+      versionSelection:
+        constraints: 1.7.0
+    tapProfile: view
+  - clusterCaCert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQWRLZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJek1USXdOakUzTVRFeE1sb1hEVE16TVRJd016RTNNVFl4TWxvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTTlxClV5RzAwTmNOVHhyY2RZMlBqNUwwM0gzODFrTks2Ny8vRkhKQnFHM3FjODVnWGxaZUVsWVBhY2NxcTBRWmVIdVAKQjM0OTVHeEgyZEd3dzFvUjZxOElxREtwdE5NOHFFY3NkcWxDNXRJa1dDMWFWVHJWbmgyYlp1aXRZYmx1TWlVZgpHS3VhYldSUk5sem5vWVBHbWZ4dmFmQkJnK2E3SnlPcTBwbFJvVDBDVmM2T1JSb3VTWGNYZFdXQVB4QUpEenhGCjl3WkVMWXE3UWJyeEFudDJLTHBsNzVjRU5qUEZ3Y0F0bFJPOFpxbVJyOVA2cU1CeEo3U2VxYmxSWnF3V1lXa1gKMHVLMDNwS3ZSckZ6MHFFUkxZM2VFbUF0cUpqdjliUTQ2bXo4VHArQWRGcnhMcDYrazVOakxsS1ExcDY5amhadwpENTZ5UWIxVkFaVzllbldmRjNzQ0F3RUFBYU5GTUVNd0RnWURWUjBQQVFIL0JBUURBZ0trTUJJR0ExVWRFd0VCCi93UUlNQVlCQWY4Q0FRQXdIUVlEVlIwT0JCWUVGQ1B3cG1EcXpLRXV5S3hqNTBOMzFnUjBEdjhrTUEwR0NTcUcKU0liM0RRRUJDd1VBQTRJQkFRQi8vT2drRHkzWEdZRUFSQlhYdDZ4M0dCbTVLejlsaytkVk1SeFpMM294Y3pZVwpSc1ZyT0lUczNER29LaTV0NHJPd0hxYXd3RU5nQ3ZLREtMcFJ5MDRnTk9zN05sZ1htQlJBdFppQWhUS1B2VUhxCkFaQVlSMnBaUjVMKzdJZG1SYnhXVjBkS1d6NjFLWVRVL3NFYllGSm91WjlhaFlBQlQ1cUN5M3laaXA5TStxMkcKUHF0K01sZ241eEZHRElDbG9XMXltRW00MEFiZFZLUzJuVWlnOUlJendwbi8zWEhOL0s5TXhQSWZSaXNNQUhsbgpYV1BKNjIrUkhtKzZMQkZwUWNiL251YUw0WExrS1FkWG1JVS90THZuYVBMYmp1RnZsbFA0MFdQYmFBaHNzQjVpCmpuWlhreHd3TDIvVGdhc1hxV29mTHFMOGpxelgycTlrdmRMTmNReTcKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    clusterFullName:
+      managementClusterName: costco-poc
+      name: tap-build
+      orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+      provisionerName: lab
+    clusterUid: c:01HH0229BVXMG7XXNTVV451YDN
+    clusterUrl: https://10.214.167.181:6443
+    inlineValues:
+      ceip_policy_disclosed: true
+      deployed_through_tmc: true
+      excluded_packages:
+      - fluxcd.source.controller.tanzu.vmware.com
+      grype:
+        metadataStore:
+          authSecret:
+            importFromNamespace: metadata-store-secrets
+            name: store-auth-token
+          caSecret:
+            importFromNamespace: metadata-store-secrets
+            name: store-ca-cert
+          url: https://metadata-store.tap-view.ct-tap.azure.warroyo.com
+      namespace_provisioner:
+        additional_sources:
+        - git:
+            ref: origin/main
+            subPath: ns-provisioner/clusters/tap-build/config
+            url: https://github.com/warroyo/tmc-tap
+          path: _ytt_lib/testing-scanning-supplychain-parameterized-setup
+        controller: false
+        default_parameters:
+          supply_chain_service_account:
+            secrets:
+            - github-warroyo-secret
+        gitops_install:
+          ref: origin/main
+          subPath: ns-provisioner/clusters/tap-build/namespaces
+          url: https://github.com/warroyo/tmc-tap
+      ootb_supply_chain_testing_scanning:
+        gitops:
+          commit_strategy: pull_request
+          pull_request:
+            commit_branch: ""
+            pull_request_body: generated by supply chain
+            pull_request_title: ready for review
+            server_kind: github
+          repository_name: tmc-tap
+          repository_owner: warroyo
+          server_address: https://github.com/
+          ssh_secret: github-warroyo-secret
+      profile: build
+      shared:
+        image_registry:
+          project_path: dev.registry.tanzu.vmware.com/warroyo
+          secret:
+            name: dev-tanzu-registry
+            namespace: default
+      supply_chain: testing_scanning
+      tap_telemetry:
+        customer_entitlement_account_number: ""
+    packageRef:
+      packageMetadataName: tap.tanzu.vmware.com
+      versionSelection:
+        constraints: 1.7.0
+    tapProfile: build
+  - clusterCaCert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQWRLZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJek1USXdOakUzTVRZek5Wb1hEVE16TVRJd016RTNNakV6TlZvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTUFpCmZzV21BZzM0QnBEL2VMZld0YWVLeFZoeVpFVHVGVXRBb2NNaThXY28wV0NkMi9nRjR5NGNwc1FONFhydkpYY1MKYnB3UVZQcHBOUGFWZ0ZVeENnV1M1SmdNMDQvd2hJY1VDaktUS0xhbVBCUlF3aUJZVlZqSlRKR2dZcENvTm4xRwpjbGFXak5WYzlFdytiWnJYVGQ3MWxOOVpGcVVqRXQ0SzVQQkw4L2JKaXBObUwvYzlxNmRORHJoREVsbUl2MHd5ClZVQVcvOWZzMTcxTTVQVHg5ODdjK3Y0eTc0eFRiMUUyc2hVcmpHZWhpbzdXVi9nSEp2cHFUYWZFRm1nb1orcGUKOWZYUGc2R3QyT000b1ZpNkdsUDhENDJvVCtUUGRIVGwzZVZ2aWlqZzRxQ1Q5dzNqVTcveXFHWjlLT3JrTFZRcApMajJIaVRqWEJoa3FTQSs1MkVFQ0F3RUFBYU5GTUVNd0RnWURWUjBQQVFIL0JBUURBZ0trTUJJR0ExVWRFd0VCCi93UUlNQVlCQWY4Q0FRQXdIUVlEVlIwT0JCWUVGUG5lM0tGSTJyK1NSTVlTTlR3Yy9vLzROUVNoTUEwR0NTcUcKU0liM0RRRUJDd1VBQTRJQkFRQVNTdkZIYlFPNk5yRWhyUEx1eG5TYXhoKzFKWEZHYjZQVGRXL2xHSGJVdnV1VwpuMGhDM0FQbkh0OU52dHJ6WmcrSzNmbTNuWkp3aERjSlRYenVqSTdURCtwUC9PR2VmYXdLL1JkNERub3loMGpsCk8wODNWRWJkUGltYTl4RXY0N2dJaWhxOWVGTUg3ZHVEVEUwb2VnaWpDem5hQTB0b3E5K1ljMGpXa0tPaUZnNTIKeTBrOThqVTNHMG1lb0NiYXZWNmhBM2JwazV1MDZFbDAzS3htenhQRkZEVWx5dHVWUGtHZ0tZcGVtZGdHbzlFQgoyWDJZQ0RsVGdBRmdIYVdHVkowc2hPbW5UZ1VUUGNXYktEeWJtRDc2cG4vS1RYSkI5WnlEbDQ1SndZRjVUNEIwCnF4dEc0WkNsU3Zwdzc3TWJvMWhsaytBMnpDZVptbnFlK3lSNjVmM3UKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    clusterFullName:
+      managementClusterName: costco-poc
+      name: tap-run
+      orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+      provisionerName: lab
+    clusterUid: c:01HH02AKR68H28HHQ28PDCWN0F
+    clusterUrl: https://10.214.167.182:6443
+    inlineValues:
+      ceip_policy_disclosed: true
+      deployed_through_tmc: true
+      excluded_packages:
+      - fluxcd.source.controller.tanzu.vmware.com
+      namespace_provisioner:
+        additional_sources:
+        - git:
+            ref: origin/main
+            subPath: ns-provisioner/clusters/tap-run/config
+            url: https://github.com/warroyo/tmc-tap
+        controller: false
+        default_parameters:
+          supply_chain_service_account:
+            secrets:
+            - github-warroyo-secret
+        gitops_install:
+          ref: origin/main
+          subPath: ns-provisioner/clusters/tap-run/namespaces
+          url: https://github.com/warroyo/tmc-tap
+      package_overlays:
+      - name: cert-manager
+        secrets:
+        - name: cert-man-recursive-ns
+      profile: run
+      shared:
+        ingress_domain: onprem.ct-tap.azure.warroyo.com
+        ingress_issuer: letsencrypt-prod
+      tap_telemetry:
+        customer_entitlement_account_number: ""
+    packageRef:
+      packageMetadataName: tap.tanzu.vmware.com
+      versionSelection:
+        constraints: 1.7.0
+    tapProfile: run
+  tokenRotationDuration: 86400s
+status:
+  clusterPackageStatuses:
+    c:01HH00AQP12M7QPTBWYTBZ6149:
+      clusterFullName:
+        managementClusterName: costco-poc
+        name: tap-view
+        orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+        provisionerName: lab
+      conditions:
+        Ready:
+          lastTransitionTime: "2023-12-15T21:22:04Z"
+          message: Reconcile succeeded
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: Ready
+        ReconcileSucceeded:
+          lastTransitionTime: "2023-12-15T21:22:04Z"
+          message: Reconcile succeeded
+          status: "TRUE"
+          type: ReconcileSucceeded
+        Scheduled:
+          lastTransitionTime: "2023-12-15T21:22:04.798984802Z"
+          message: Package Install has been applied on cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: Scheduled
+        SecretPresent:
+          lastTransitionTime: "2023-12-15T21:22:04Z"
+          message: secret 'tap-b0938f6' is used
+          reason: tap-b0938f6
+          severity: INFO
+          status: "TRUE"
+          type: SecretPresent
+        SecretSynced:
+          lastTransitionTime: "2023-12-15T21:21:44.268649441Z"
+          message: Secret successfully synced to cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: SecretSynced
+      packageRef:
+        packageMetadataName: tap.tanzu.vmware.com
+        versionSelection:
+          constraints: 1.7.0
+      phase: APPLIED
+      tapAppLabel: "1701882803429727328"
+      tapProfile: view
+    c:01HH0229BVXMG7XXNTVV451YDN:
+      clusterFullName:
+        managementClusterName: costco-poc
+        name: tap-build
+        orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+        provisionerName: lab
+      conditions:
+        Ready:
+          lastTransitionTime: "2023-12-15T21:32:07Z"
+          message: Reconcile succeeded
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: Ready
+        ReconcileSucceeded:
+          lastTransitionTime: "2023-12-15T21:32:07Z"
+          message: Reconcile succeeded
+          status: "TRUE"
+          type: ReconcileSucceeded
+        Scheduled:
+          lastTransitionTime: "2023-12-15T21:32:07.203728946Z"
+          message: Package Install has been applied on cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: Scheduled
+        SecretPresent:
+          lastTransitionTime: "2023-12-15T21:32:07Z"
+          message: secret 'tap-524fd22' is used
+          reason: tap-524fd22
+          severity: INFO
+          status: "TRUE"
+          type: SecretPresent
+        SecretSynced:
+          lastTransitionTime: "2023-12-15T21:31:44.304538499Z"
+          message: Secret successfully synced to cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: SecretSynced
+      packageRef:
+        packageMetadataName: tap.tanzu.vmware.com
+        versionSelection:
+          constraints: 1.7.0
+      phase: APPLIED
+      tapAppLabel: "1702052865405779506"
+      tapProfile: build
+    c:01HH02AKR68H28HHQ28PDCWN0F:
+      clusterFullName:
+        managementClusterName: costco-poc
+        name: tap-run
+        orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+        provisionerName: lab
+      conditions:
+        Ready:
+          lastTransitionTime: "2023-12-15T21:36:40Z"
+          message: Reconciling
+          reason: Reconciling
+          severity: INFO
+          type: Ready
+        Reconciling:
+          lastTransitionTime: "2023-12-15T21:36:40Z"
+          message: Reconciling
+          status: "TRUE"
+          type: Reconciling
+        Scheduled:
+          lastTransitionTime: "2023-12-15T21:36:40.685621177Z"
+          message: Package Install has been applied on cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: Scheduled
+        SecretPresent:
+          lastTransitionTime: "2023-12-15T21:36:40Z"
+          message: secret 'tap-a34b96b' is used
+          reason: tap-a34b96b
+          severity: INFO
+          status: "TRUE"
+          type: SecretPresent
+        SecretSynced:
+          lastTransitionTime: "2023-12-15T21:36:34.476774778Z"
+          message: Secret successfully synced to cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: SecretSynced
+      packageRef:
+        packageMetadataName: tap.tanzu.vmware.com
+        versionSelection:
+          constraints: 1.7.0
+      phase: PENDING
+      tapProfile: run
+    c:01HHDP1AHYAQ2YZTYX65FG838C:
+      clusterFullName:
+        managementClusterName: costco-poc
+        name: tap-run-tsm
+        orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+        provisionerName: lab
+      conditions:
+        Ready:
+          lastTransitionTime: "2023-12-15T21:31:42Z"
+          message: Reconcile succeeded
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: Ready
+        ReconcileSucceeded:
+          lastTransitionTime: "2023-12-15T21:31:42Z"
+          message: Reconcile succeeded
+          status: "TRUE"
+          type: ReconcileSucceeded
+        Scheduled:
+          lastTransitionTime: "2023-12-15T21:31:42.150662794Z"
+          message: Package Install has been applied on cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: Scheduled
+        SecretPresent:
+          lastTransitionTime: "2023-12-15T21:31:42Z"
+          message: secret 'tap-3f38acd' is used
+          reason: tap-3f38acd
+          severity: INFO
+          status: "TRUE"
+          type: SecretPresent
+        SecretSynced:
+          lastTransitionTime: "2023-12-15T21:03:10.461820276Z"
+          message: Secret successfully synced to cluster
+          reason: ReconcileSucceeded
+          severity: INFO
+          status: "TRUE"
+          type: SecretSynced
+      packageRef:
+        packageMetadataName: tap.tanzu.vmware.com
+        versionSelection:
+          constraints: 1.7.0
+      phase: APPLIED
+      tapAppLabel: "1702394556757654095"
+      tapProfile: run
+  conditions:
+    Ready:
+      lastTransitionTime: "2023-12-15T21:36:40Z"
+      message: TAP solution deployment is in progress
+      reason: Reconciling
+      severity: INFO
+      type: Ready
+  phase: PENDING
+type:
+  kind: Solution
+  package: vmware.tanzu.manage.v1alpha1.tanzupackage.tap.solution
+  version: v1alpha1
+

@@ -360,6 +360,8 @@ rm kust.yaml
 export TAP_NAME=$(cat tanzu-cli/values/values.yml| yq .tap.name)
 ytt --data-values-file tanzu-cli/values -f tanzu-cli/tap/tap-template.yml > tap.yaml
 
+
+
 tanzu tmc tanzupackage tap create -n $TAP_NAME -f tap.yaml
 rm tap.yaml
 ```

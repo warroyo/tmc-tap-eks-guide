@@ -1,0 +1,29 @@
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretTemplate
+metadata:
+  name: github-secret
+spec:
+  #! list of resources to read information off
+  inputResources:
+  - name: pat
+    ref:
+      apiVersion: v1
+      kind: Secret
+      name: github-pat
+  #! the template that follows a subset of the Secret API
+  template:
+    metadata:
+      annotations:
+        tekton.dev/git-0: https://github.com
+    #! data is used for templating in data that *is* base64 encoded, most likely Secrets.
+    type: kubernetes.io/basic-auth
+    data:
+      password: $(.pat.data.password)
+      username: $(.pat.data.username)
+---
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretImport
+metadata:
+  name: github-pat
+spec:
+  fromNamespace: tap-install

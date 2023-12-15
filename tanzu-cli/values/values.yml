@@ -1,5 +1,7 @@
 clusterGroupName: tap-mc
 gitrepo: https://github.com/warroyo/tmc-tap-quickstart
+gitrepo_owner: warroyo
+gitrepo_name: tmc-tap-quickstart
 orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
 clusters:
   view:
@@ -58,3 +60,4 @@ tap:
       ingress_domain: tap-view.tapmc.aws.warroyo.com
       ingress_issuer: letsencrypt-prod
     build:
+      ecr: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform
