@@ -49,11 +49,15 @@ spec:
       name: #@ build_agent
       provisionerName: eks
       orgId: #@ data.values.orgId
+    clusterUrl: #@ data.values.tap.profiles.build.clusterUrl
     inlineValues:
       ceip_policy_disclosed: true
       deployed_through_tmc: true
       excluded_packages:
       - fluxcd.source.controller.tanzu.vmware.com
+      buildservice:
+        kp_default_repository: #@ data.values.tap.profiles.build.ecr.server + "/" + data.values.tap.profiles.build.ecr.repo
+        kp_default_repository_aws_iam_role_arn:  #@ data.values.tap.profiles.build.aws_role_arn
       grype:
         metadataStore:
           authSecret:
@@ -64,6 +68,7 @@ spec:
             name: store-ca-cert
           url: #@ "https://metadata-store." + data.values.tap.profiles.view.ingress_domain
       namespace_provisioner:
+        aws_iam_role_arn: #@ data.values.tap.profiles.build.aws_role_arn
         additional_sources:
         - git:
             ref: origin/main
@@ -79,6 +84,7 @@ spec:
           ref: origin/main
           subPath: #@ "ns-provisioner/clusters/"+ data.values.clusters.build.name + "/namespaces"
           url: #@ data.values.gitrepo
+      supply_chain: "testing_scanning"
       ootb_supply_chain_testing_scanning:
         gitops:
           commit_strategy: pull_request
@@ -91,6 +97,11 @@ spec:
           repository_owner: #@ data.values.gitrepo_owner
           server_address: https://github.com/
           ssh_secret: github-pat
+        registry:
+          repository: #@ data.values.tap.profiles.build.ecr.repo
+          server: #@ data.values.tap.profiles.build.ecr.server
+      ootb_templates:
+        iaas_auth: true
       profile: build
     packageRef:
       packageMetadataName: tap.tanzu.vmware.com

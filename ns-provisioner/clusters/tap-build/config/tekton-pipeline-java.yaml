@@ -41,7 +41,7 @@ spec:
               type: RuntimeDefault
         steps:
           - name: test
-            image: harbor-repo.vmware.com/dockerhub-proxy-cache/library/gradle
+            image: gradle
             script: |-
               cd `mktemp -d`
               wget -qO- $(params.source-url) | tar xvz -m
