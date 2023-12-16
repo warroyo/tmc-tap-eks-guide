@@ -69,8 +69,118 @@ aws ecr create-repository --repository-name tap-build-service --region $AWS_REGI
 
 export the required vars
 ```
-export EKS_CLUSTER_NAME=$(cat tanzu-cli/values.yml| yq .clusters.build.name)
+export EKS_CLUSTER_NAME=$(cat tanzu-cli/values/values.yml| yq .clusters.build.name)
 export OIDCPROVIDER=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --output json | jq '.cluster.identity.oidc.issuer' | tr -d '"' | sed 's/https:\/\///')
+```
+
+create the build service trust policy
+
+```
+cat << EOF > build-service-trust-policy-$EKS_CLUSTER_NAME.json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::${AWS_ACCOUNT_ID}:oidc-provider/${OIDCPROVIDER}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "${OIDCPROVIDER}:aud": "sts.amazonaws.com"
+                },
+                "StringLike": {
+                    "${OIDCPROVIDER}:sub": [
+                        "system:serviceaccount:kpack:controller",
+                        "system:serviceaccount:build-service:dependency-updater-controller-serviceaccount"
+                    ]
+                }
+            }
+        }
+    ]
+}
+EOF
+
+aws iam create-role --role-name tap-build-service-$EKS_CLUSTER_NAME --assume-role-policy-document file://build-service-trust-policy-$EKS_CLUSTER_NAME.json
+
+rm build-service-trust-policy-$EKS_CLUSTER_NAME.json
+```
+
+
+create the build service policy
+
+```
+cat << EOF > build-service-policy-$EKS_CLUSTER_NAME.json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "ecr:DescribeRegistry",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetRegistryPolicy",
+                "ecr:PutRegistryPolicy",
+                "ecr:PutReplicationConfiguration",
+                "ecr:DeleteRegistryPolicy"
+            ],
+            "Resource": "*",
+            "Effect": "Allow",
+            "Sid": "TAPEcrBuildServiceGlobal"
+        },
+        {
+            "Action": [
+                "ecr:DescribeImages",
+                "ecr:ListImages",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGetImage",
+                "ecr:BatchGetRepositoryScanningConfiguration",
+                "ecr:DescribeImageReplicationStatus",
+                "ecr:DescribeImageScanFindings",
+                "ecr:DescribeRepositories",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetLifecyclePolicy",
+                "ecr:GetLifecyclePolicyPreview",
+                "ecr:GetRegistryScanningConfiguration",
+                "ecr:GetRepositoryPolicy",
+                "ecr:ListTagsForResource",
+                "ecr:TagResource",
+                "ecr:UntagResource",
+                "ecr:BatchDeleteImage",
+                "ecr:BatchImportUpstreamImage",
+                "ecr:CompleteLayerUpload",
+                "ecr:CreatePullThroughCacheRule",
+                "ecr:CreateRepository",
+                "ecr:DeleteLifecyclePolicy",
+                "ecr:DeletePullThroughCacheRule",
+                "ecr:DeleteRepository",
+                "ecr:InitiateLayerUpload",
+                "ecr:PutImage",
+                "ecr:PutImageScanningConfiguration",
+                "ecr:PutImageTagMutability",
+                "ecr:PutLifecyclePolicy",
+                "ecr:PutRegistryScanningConfiguration",
+                "ecr:ReplicateImage",
+                "ecr:StartImageScan",
+                "ecr:StartLifecyclePolicyPreview",
+                "ecr:UploadLayerPart",
+                "ecr:DeleteRepositoryPolicy",
+                "ecr:SetRepositoryPolicy"
+            ],
+            "Resource": [
+                "arn:aws:ecr:${AWS_REGION}:${AWS_ACCOUNT_ID}:repository/full-deps-package-repo",
+                "arn:aws:ecr:${AWS_REGION}:${AWS_ACCOUNT_ID}:repository/tap-build-service",
+                "arn:aws:ecr:${AWS_REGION}:${AWS_ACCOUNT_ID}:repository/tap-images"
+            ],
+            "Effect": "Allow",
+            "Sid": "TAPEcrBuildServiceScoped"
+        }
+    ]
+}
+EOF
+
+aws iam put-role-policy --role-name tap-build-service-$EKS_CLUSTER_NAME --policy-name tapBuildServicePolicy --policy-document file://build-service-policy-$EKS_CLUSTER_NAME.json
+rm build-service-policy-$EKS_CLUSTER_NAME.json
 ```
 
 create the workload trust policy specific to the cluster's OIDC endpoint 

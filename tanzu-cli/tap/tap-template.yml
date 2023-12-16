@@ -56,8 +56,8 @@ spec:
       excluded_packages:
       - fluxcd.source.controller.tanzu.vmware.com
       buildservice:
-        kp_default_repository: #@ data.values.tap.profiles.build.ecr.server + "/" + data.values.tap.profiles.build.ecr.repo
-        kp_default_repository_aws_iam_role_arn:  #@ data.values.tap.profiles.build.aws_role_arn
+        kp_default_repository: #@ data.values.tap.profiles.build.ecr.server + "/" + data.values.tap.profiles.build.ecr.tbs_repo
+        kp_default_repository_aws_iam_role_arn:  #@ data.values.tap.profiles.build.aws_tbs_role_arn
       grype:
         metadataStore:
           authSecret:
@@ -68,7 +68,7 @@ spec:
             name: store-ca-cert
           url: #@ "https://metadata-store." + data.values.tap.profiles.view.ingress_domain
       namespace_provisioner:
-        aws_iam_role_arn: #@ data.values.tap.profiles.build.aws_role_arn
+        aws_iam_role_arn: #@ data.values.tap.profiles.build.aws_workload_role_arn
         additional_sources:
         - git:
             ref: origin/main
@@ -98,7 +98,7 @@ spec:
           server_address: https://github.com/
           ssh_secret: github-pat
         registry:
-          repository: #@ data.values.tap.profiles.build.ecr.repo
+          repository: #@ data.values.tap.profiles.build.ecr.workload_repo
           server: #@ data.values.tap.profiles.build.ecr.server
       ootb_templates:
         iaas_auth: true

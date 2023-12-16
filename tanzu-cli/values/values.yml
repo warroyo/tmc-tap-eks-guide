@@ -61,7 +61,9 @@ tap:
       ingress_issuer: letsencrypt-prod
     build:
       clusterUrl: https://a5af4a592074a400d8bccd5977e61d8a-193629218.us-west-2.elb.amazonaws.com
-      aws_role_arn: arn:aws:iam::074754820263:role/tap-workload-tap-build
+      aws_workload_role_arn: arn:aws:iam::074754820263:role/tap-workload-tap-build
+      aws_tbs_role_arn: arn:aws:iam::074754820263:role/tap-build-service-tap-build
       ecr:
         server: 074754820263.dkr.ecr.us-west-2.amazonaws.com
-        repo: tanzu-application-platform
+        workload_repo: tanzu-application-platform
+        tbs_repo: tap-build-service
