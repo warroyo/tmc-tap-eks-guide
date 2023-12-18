@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Secret
 metadata:
- name: cert-man-sa-arn
- namespace: tap-install
- annotations:
-   kapp.k14s.io/change-group: "tap-overlays"
+  name: cert-man-sa-arn
+  namespace: tap-install
+  annotations:
+    kapp.k14s.io/change-group: tap-overlays
 type: Opaque
 stringData:
-   cert-man-sa-arn.yaml: |
+  cert-man-sa-arn.yaml: |-
     #@ load("@ytt:overlay", "overlay")
     #@ load("@ytt:data", "data")
     #@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata": {"name": "cert-manager" }}), expects=1

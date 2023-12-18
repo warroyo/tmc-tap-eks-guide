@@ -1,0 +1,14 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:regexp", "regexp")
+
+#@ def replace_config(old, _):
+  #@   new = regexp.replace("(?m)eks.amazonaws.com/role-arn.*", old, "eks.amazonaws.com/role-arn: "+ data.values.dnsRoleArn)
+  #@   return new
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "cert-man-sa-arn" }}), expects=1
+---
+stringData:
+  #@overlay/replace via=replace_config
+  cert-man-sa-arn.yaml:

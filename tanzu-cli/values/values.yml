@@ -3,6 +3,7 @@ gitrepo: https://github.com/warroyo/tmc-tap-quickstart
 gitrepo_owner: warroyo
 gitrepo_name: tmc-tap-quickstart
 orgId: d8bdaf07-6e61-4310-92f3-8c52e24a2d54
+dnsRoleArn: arn:aws:iam::074754820263:role/tap-dns-role
 clusters:
   view:
     credName: eks-warroyo2

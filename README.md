@@ -1,56 +1,96 @@
-# tmc-tap-quickstart
+# TAP on EKS using TMC 
 
 This repo is an example of how to quickly get up and running in EKS with TAP using the Tanzu CLI for TMC. The goal of this repo is to simplify all of the pieces involved in standing up TAP down to some CLI commands. The goal of this is not to entirely script the process, but rather outline and document all of the individual commands needed to set up TAP in an opinionated way on EKS using TMC. This repo does not create an iterate cluster at this time. the current focus of this repo is on the outer loop.
 
-## Create the cluster group
+## Tools
+
+* Tanzu CLI
+  * TMC plugin
+  * Apps Plugin
+* yq
+* ytt
+* AWS cli
+* eksctl
+
+## Usage
+
+Clone/Fork this repo and follow the steps below. 
+
+## Populate the values file
+
+We will try and capture as much as we possibly can in the `values` to reduce the need to manually rename things. However there are still some things that need to be manually renamed, those will be documented in the steps below.
+
+The values file can be found in `tanzu-cli/values/values.yml`. Update all of the necessary fields to match your environment.
+
+## Setup the infra 
+
+First we need to create some clusters and setup our intial gitops repo.
+
+### Create the cluster group
+
+This creates the intiial cluster group that all of the tap clusters will be part of and is the base for our gitops setup.
 
 ```
-ytt -f tanzu-cli/values.yml -f tanzu-cli/cluster-group/cg-template.yml > cg.yaml
-tanzu tmc clustergroup create -f cg.yaml
-rm cg.yaml
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/cluster-group/cg-template.yml > generated/cg.yaml
+tanzu tmc clustergroup create -f generated/cg.yaml
 ```
-## enable helm and flux
+
+
+### Enable helm and flux
+
+The below commands enable flux at the cluster group level and install the source, helm, and kustomize controllers. These will be installed automatically on all clusters in this cluster group.
 
 ```
 tanzu tmc continuousdelivery enable -g tap-mc -s clustergroup
 tanzu tmc helm enable -g tap-mc -s clustergroup
 ```
-## Create cluster group  secrets
 
-first generate a PAT in github using the legacy token method. give the pat access to all repo privileges
+### Create cluster group secrets
 
+We can use the TMC cluster group secrets feature to push out opaque or registry credentials to all of out k8s clusters. For this use case we will use it to add our github pat as a secret to be used later in the TAP install. 
+
+1. generate a PAT in github using the legacy token method. Give the pat access to all repo privileges.
+2. copy the `tanzu-cli/values/sensitive-values-template.yml` to `tanzu-cli/values/sensitive-values.yml` and add your newly created PAT and username to it. 
+3. create and export the secret using the below commands
 ```
-ytt --data-values-file tanzu-cli/values -f tanzu-cli/secrets/github-pat-template.yml > pat-secret.yaml
-tanzu tmc secret create -f pat-secret.yaml -s clustergroup
-rm pat-secret.yaml
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/secrets/github-pat-template.yml > generated/pat-secret.yaml
+tanzu tmc secret create -f generated/pat-secret.yaml -s clustergroup
 
-ytt --data-values-file tanzu-cli/values -f tanzu-cli/secrets/github-pat-export-template.yml > pat-export.yaml
-tanzu tmc secret export create -f pat-export.yaml -s clustergroup
-```
-
-## Create the clusters
-
-```
-ytt -f tanzu-cli/clusters/<profile-name>.yml -f tanzu-cli/clusters/cluster-template.yml > <profile-name>-cluster.yaml
-
-ytt -f tanzu-cli/clusters/<profile-name>.yml -f tanzu-cli/clusters/nodepool-template.yml > <profile-name>-np.yaml
-
-tanzu tmc ekscluster create -f <profile-name>-cluster.yaml
-tanzu tmc ekscluster nodepool create -f <profile-name>-np.yaml                                                                 
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/secrets/github-pat-export-template.yml > generated/pat-export.yaml
+tanzu tmc secret export create -f generated/pat-export.yaml -s clustergroup
 ```
 
-## asscoiate the OIDC url with a provider
+### Create the clusters
 
-run this for all three clusters
+This needs to be done for 3 clusters, each with a different profile
+* build
+* run
+* view
+  
+```
+export $PROFILE=<profile-name>
+ytt --data-values-file tanzu-cli/values --data-value profile=$PROFILE -f tanzu-cli/clusters/cluster-template.yml > generated/$PROFILE-cluster.yaml
+
+ytt --data-values-file tanzu-cli/values --data-value profile=$PROFILE -f tanzu-cli/clusters/nodepool-template.yml > generated/$PROFILE-np.yaml
+
+tanzu tmc ekscluster create -f $PROFILE-cluster.yaml
+tanzu tmc ekscluster nodepool create -f $PROFILE-np.yaml                                                                 
+```
+
+### asscoiate the OIDC url with a provider
+
+
+This sets up the OIDC provdier in aws so that we can use IRSA. Run this for all three clusters
 
 ```
 eksctl utils associate-iam-oidc-provider --cluster <cluster-name> --approve
 ```
 
-## Create ECR repos 
+### Create ECR repos 
 
 [official docs](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.7/tap/install-aws-resources.html#create-the-workload-container-repositories-5)
 
+ECR is a bit different than other registries, for ECR everything needs to be pre-created so we need to create repos for both the build service images and the workloads. I this example we are creating one for `tanzu-java-web-app-dev` but if you add more workloads you will need to create ECR repos for those as well. 
 
 ```
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
@@ -62,10 +102,11 @@ aws ecr create-repository --repository-name tap-build-service --region $AWS_REGI
 ```
 
 
-## Create the AWS roles/policies for ECR
+### Create the AWS roles/policies for ECR
 
 [official docs](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.7/tap/install-aws-resources.html#create-iam-roles-6)
 
+This sets up two roles with some inline policy and a trust policy. This is required for using IRSA with ECR and allows the build service to pull and push images via the role. These should be applied to the build cluster.
 
 export the required vars
 ```
@@ -75,10 +116,10 @@ export EKS_CLUSTER_NAME=$(cat tanzu-cli/values/values.yml| yq .clusters.build.na
 export OIDCPROVIDER=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --output json | jq '.cluster.identity.oidc.issuer' | tr -d '"' | sed 's/https:\/\///')
 ```
 
-create the build service trust policy
+create the build service trust policy and role
 
 ```
-cat << EOF > build-service-trust-policy-$EKS_CLUSTER_NAME.json
+cat << EOF > generated/build-service-trust-policy-$EKS_CLUSTER_NAME.json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -104,16 +145,15 @@ cat << EOF > build-service-trust-policy-$EKS_CLUSTER_NAME.json
 }
 EOF
 
-aws iam create-role --role-name tap-build-service-$EKS_CLUSTER_NAME --assume-role-policy-document file://build-service-trust-policy-$EKS_CLUSTER_NAME.json
-
-rm build-service-trust-policy-$EKS_CLUSTER_NAME.json
-```
-
-
-create the build service policy
+aws iam create-role --role-name tap-build-service-$EKS_CLUSTER_NAME --assume-role-policy-document file://generated/build-service-trust-policy-$EKS_CLUSTER_NAME.json
 
 ```
-cat << EOF > build-service-policy-$EKS_CLUSTER_NAME.json
+
+
+create the build service permissions policy
+
+```
+cat << EOF > generated/build-service-policy-$EKS_CLUSTER_NAME.json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -181,14 +221,13 @@ cat << EOF > build-service-policy-$EKS_CLUSTER_NAME.json
 }
 EOF
 
-aws iam put-role-policy --role-name tap-build-service-$EKS_CLUSTER_NAME --policy-name tapBuildServicePolicy --policy-document file://build-service-policy-$EKS_CLUSTER_NAME.json
-rm build-service-policy-$EKS_CLUSTER_NAME.json
+aws iam put-role-policy --role-name tap-build-service-$EKS_CLUSTER_NAME --policy-name tapBuildServicePolicy --policy-document file://generated/build-service-policy-$EKS_CLUSTER_NAME.json
 ```
 
 create the workload trust policy specific to the cluster's OIDC endpoint 
 
 ```
-cat << EOF > workload-trust-policy-$EKS_CLUSTER_NAME.json
+cat << EOF > generated/workload-trust-policy-$EKS_CLUSTER_NAME.json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -209,14 +248,13 @@ cat << EOF > workload-trust-policy-$EKS_CLUSTER_NAME.json
 }
 EOF
 
-aws iam create-role --role-name tap-workload-$EKS_CLUSTER_NAME --assume-role-policy-document file://workload-trust-policy-$EKS_CLUSTER_NAME.json
-rm workload-trust-policy-$EKS_CLUSTER_NAME.json
+aws iam create-role --role-name tap-workload-$EKS_CLUSTER_NAME --assume-role-policy-document file://generated/workload-trust-policy-$EKS_CLUSTER_NAME.json
 ```
 
-create the workload policy specific to the account.
+create the workload permissions policy specific to the account.
 
 ```
-cat << EOF > workload-policy.json
+cat << EOF > generated/workload-policy-$EKS_CLUSTER_NAME.json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -282,22 +320,25 @@ cat << EOF > workload-policy.json
     ]
 }
 EOF
-aws iam put-role-policy --role-name tap-workload-$EKS_CLUSTER_NAME --policy-name tapWorkload --policy-document file://workload-policy.json
-rm 
-workload-policy.json
+aws iam put-role-policy --role-name tap-workload-$EKS_CLUSTER_NAME --policy-name tapWorkload --policy-document file://generated/workload-policy-$EKS_CLUSTER_NAME.json
 ```
 
-get the role ARN to be used in the values.
+Get the role ARNs and add them to the values.yml
 
 ```
 aws iam get-role --role-name tap-workload-$EKS_CLUSTER_NAME --query Role.Arn --output text
+aws iam get-role --role-name tap-build-service-$EKS_CLUSTER_NAME --query Role.Arn --output text
 ```
 
-## configure AWS policies for Certman and ExternalDNS
+the build service arn should go into `tap.build.aws_tbs_role_arn` and the workload arn should go into `tap.build.aws_workload_role_arn`
 
-this needs to be done for view and run clusters, so we are setting up two OIDC provdiers in the trust
 
-export the required vars
+### configure AWS policies for Certman and ExternalDNS
+
+The below commands will create the policies and roles so that cert manager and external-dns can add entries to rouet53. This allows us to fully automate DNS and certs. This needs to be done for view and run clusters, so we are setting up two OIDC provdiers in the trust policy. 
+
+export the required vars.
+
 ```
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
 export AWS_REGION=us-west-2
@@ -306,11 +347,13 @@ export VIEW_OIDCPROVIDER=$(aws eks describe-cluster --name $VIEW_CLUSTER_NAME --
 export RUN_CLUSTER_NAME=$(cat tanzu-cli/values/values.yml| yq .clusters.run.name)
 export RUN_OIDCPROVIDER=$(aws eks describe-cluster --name $RUN_CLUSTER_NAME --region $AWS_REGION --output json | jq '.cluster.identity.oidc.issuer' | tr -d '"' | sed 's/https:\/\///')
 ```
-create the trust
+
+
+create the trust policy and role. This trust policy will include both clusters. 
 
 ```
 
-cat << EOF > dns-trust.json
+cat << EOF > generated/dns-trust.json
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -370,15 +413,14 @@ cat << EOF > dns-trust.json
 }
 EOF
 
-aws iam create-role --role-name tap-dns-role --assume-role-policy-document file://dns-trust.json
-rm dns-trust.json
+aws iam create-role --role-name tap-dns-role --assume-role-policy-document file://generated/dns-trust.json
 
 ```
 
-create the policy and attach to the role
+create the permissions policy and attach to the role
 
 ```
-cat << EOF > dns-policy.json
+cat << EOF > generated/dns-policy.json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -411,19 +453,29 @@ cat << EOF > dns-policy.json
   ]
 }
 EOF
-aws iam put-role-policy --role-name tap-dns-role --policy-name tap-dns --policy-document file://dns-policy.json
+aws iam put-role-policy --role-name tap-dns-role --policy-name tap-dns --policy-document file://generated/dns-policy.json
 
 ```
 
 
-get the role arn to be used in the values
+get the role ARN and add it to the values file. This should be added as `dnsRoleArn` at the top level of the values file. 
 
 ```
 aws iam get-role --role-name tap-dns-role --query Role.Arn --output text
 ```
 
-update the role arn in the external dns helm chart install. This is in `infra-gitops/apps/base/external-dns/install.yml`
-Update the cert manager role arn in the values file `infra-gitops/apps/base/tap-overlays/cert-manager-arn.yml`
+Update the external helm chart values to use the ARN.
+
+```
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/overlays/dns.yml -f infra-gitops/apps/base/external-dns/install.yml --output-files infra-gitops/apps/base/external-dns
+```
+
+Update the cert manager overlay to use the new roel ARN
+
+```
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/overlays/certman-arn.yml -f infra-gitops/apps/base/tap-overlays/cert-manager-arn.yml --output-files infra-gitops/apps/base/tap-overlays
+```
+
 
 ## Setup a hosted zone
 

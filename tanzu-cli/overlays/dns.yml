@@ -1,0 +1,14 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@overlay/match by=overlay.subset({"kind": "HelmRelease", "metadata": {"name": "external-dns" }}), expects=1
+
+---
+spec:
+  #@overlay/match missing_ok=True
+  values:
+    #@overlay/match missing_ok=True
+    serviceAccount:
+      #@overlay/match missing_ok=True
+      annotations:
+        #@overlay/match missing_ok=True
+        eks.amazonaws.com/role-arn: #@ data.values.dnsRoleArn
