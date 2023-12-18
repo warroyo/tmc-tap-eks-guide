@@ -556,7 +556,7 @@ export AGENT_NAME=$(ytt --data-values-file tanzu-cli/values --data-value profile
 tanzu tmc cluster kubeconfig get $AGENT_NAME -m eks -p eks | ytt --data-values-file - --data-value profile=$PROFILE -f tanzu-cli/overlays/clusterdetails.yml -f tanzu-cli/values/values.yml --output-files tanzu-cli/values
 ```
 
-### Create the tap solution
+### Create the TAP solution
 
 The below command with generate our TMC TAP install file from the values and then create the solution. This will start the install across all clusters. you can check the status in the TMC UI.
 
