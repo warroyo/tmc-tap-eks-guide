@@ -2,6 +2,10 @@
 
 This repo is an example of how to quickly get up and running in EKS with TAP using the Tanzu CLI for TMC. The goal of this repo is to simplify all of the pieces involved in standing up TAP down to some CLI commands. The goal of this is not to entirely script the process, but rather outline and document all of the individual commands needed to set up TAP in an opinionated way on EKS using TMC. This repo does not create an iterate cluster at this time. the current focus of this repo is on the outer loop.
 
+## What this does
+
+This repo will create a fully working multicluster TAP install using TMC. This uses native AWS auth with IRSA as well as ECR as the repo. Additionally this sets up gitops with TMC managed flux that enables installing extra software in the clusters and managing TAP workloads through gitops OOTB.
+
 ## Tools
 
 * Tanzu CLI
@@ -477,9 +481,9 @@ ytt --data-values-file tanzu-cli/values -f tanzu-cli/overlays/certman-arn.yml -f
 ```
 
 
-## Setup a hosted zone
+### Setup a hosted zone
 
-if you do not already have a zone in route53 follow these steps.
+If you do not already have a zone in route53 follow these steps.
 
 ```
 aws route53 create-hosted-zone --name "tapmc.<yourdomain>.com." --caller-reference "external-dns-test-$(date +%s)"
@@ -500,36 +504,43 @@ If using your own domain that was registered with a third-party domain registrar
 
 ## Setup infra gitops
 
-create the git repo on the cluster group
+This step configures the cluster group to use this git repo as the source for flux, specifically the `infra-gitops` folder. The gitops setup is done at the cluster group level so we don't need to individually bootstrap every cluster. Thsi allows us to easily install things like external dns, cluster issuers,tap overlays, workloads and deliverables. Really it can be used to add anythign to your clusters through gitops.  
+
+before creating the TMC objects, you will need to rename the folders in `infra-gitops/clusters` to match your cluster names. Also if your cluster group name is different than `tap-mc` you will need to rename the folder in `infra-gitops/clustergroups` along with the paths in the `infra-gitops/clustergroups/<group-name>/base.yml`.
+
+create the gitrepo in TMC
 
 ```
-ytt --data-values-file tanzu-cli/values -f tanzu-cli/cd/git-repo-template.yml > gitrepo.yaml
-tanzu tmc continuousdelivery gitrepository create -f gitrepo.yaml -s clustergroup
-rm gitrepo.yaml
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/cd/git-repo-template.yml > generated/gitrepo.yaml
+tanzu tmc continuousdelivery gitrepository create -f generated/gitrepo.yaml -s clustergroup
 ```
 
 create the base kustomization that will bootstrap the clusters and setup any initial infra.
 
 
 ```
-ytt --data-values-file tanzu-cli/values -f tanzu-cli/cd/kust-template.yml > kust.yaml
-tanzu tmc continuousdelivery kustomization create -f kust.yaml -s clustergroup
-rm kust.yaml
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/cd/kust-template.yml > generated/kust.yaml
+tanzu tmc continuousdelivery kustomization create -f generated/kust.yaml -s clustergroup
 ```
 
+at this point clusters should start syncing in multiple kustomizations. You can check their status using the below command. there will be some in a failed state until the TAP install is done. 
+
+```
+kubectl get kustomizations -A
+```
 
 
 
 ## Install TAP
 
 
-### add the cluster url and ca to the values file
+### Add the cluster url and ca to the values file
 
-we need to pull back this info from the cli and update our values file.
+We need to pull back this info from the cli and update our values file. This is used so the view cluster can connect to the other clusters. 
 
 run this for build and run profiles
 
-build:
+**Build:**
 
 ```
 export PROFILE=build
@@ -537,7 +548,7 @@ export AGENT_NAME=$(ytt --data-values-file tanzu-cli/values --data-value profile
 tanzu tmc cluster kubeconfig get $AGENT_NAME -m eks -p eks | ytt --data-values-file - --data-value profile=$PROFILE -f tanzu-cli/overlays/clusterdetails.yml -f tanzu-cli/values/values.yml --output-files tanzu-cli/values
 ```
 
-Run: 
+**Run:** 
 
 ```
 export PROFILE=run
@@ -545,7 +556,9 @@ export AGENT_NAME=$(ytt --data-values-file tanzu-cli/values --data-value profile
 tanzu tmc cluster kubeconfig get $AGENT_NAME -m eks -p eks | ytt --data-values-file - --data-value profile=$PROFILE -f tanzu-cli/overlays/clusterdetails.yml -f tanzu-cli/values/values.yml --output-files tanzu-cli/values
 ```
 
-### create the tap solution
+### Create the tap solution
+
+The below command with generate our TMC TAP install file from the values and then create the solution. This will start the install across all clusters. you can check the status in the TMC UI.
 
 ```
 export TAP_NAME=$(cat tanzu-cli/values/values.yml| yq .tap.name)
@@ -555,6 +568,8 @@ tanzu tmc tanzupackage tap create -n $TAP_NAME -f generated/tap.yaml
 
 
 ### Update the TAP solution
+
+You can change the values in the values.yml and update the solution through the cli as well.
 
 ```
 export TAP_NAME=$(cat tanzu-cli/values/values.yml| yq .tap.name)
