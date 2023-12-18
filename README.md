@@ -502,9 +502,7 @@ tanzu tmc tanzupackage tap create -n $TAP_NAME -f generated/tap.yaml
 ```
 
 
-### Update the TAP soltuion
-
-
+### Update the TAP solution
 
 ```
 export TAP_NAME=$(cat tanzu-cli/values/values.yml| yq .tap.name)

@@ -21,7 +21,7 @@ metadata:
 spec:
   params:
   - name: gitops_ssh_secret
-    value: github-warroyo-secret
+    value: github-secret
   source:
     git:
       url: https://github.com/warroyo/tmc-tap-quickstart.git
