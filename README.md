@@ -69,6 +69,8 @@ aws ecr create-repository --repository-name tap-build-service --region $AWS_REGI
 
 export the required vars
 ```
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
+export AWS_REGION=us-west-2
 export EKS_CLUSTER_NAME=$(cat tanzu-cli/values/values.yml| yq .clusters.build.name)
 export OIDCPROVIDER=$(aws eks describe-cluster --name $EKS_CLUSTER_NAME --region $AWS_REGION --output json | jq '.cluster.identity.oidc.issuer' | tr -d '"' | sed 's/https:\/\///')
 ```
@@ -464,14 +466,48 @@ rm kust.yaml
 ```
 
 
+
+
 ## Install TAP
+
+
+### add the cluster url and ca to the values file
+
+we need to pull back this info from the cli and update our values file.
+
+run this for build and run profiles
+
+build:
+
+```
+export PROFILE=build
+export AGENT_NAME=$(ytt --data-values-file tanzu-cli/values --data-value profile=$PROFILE  -f tanzu-cli/overlays/agentname.yml| yq .agent)
+tanzu tmc cluster kubeconfig get $AGENT_NAME -m eks -p eks | ytt --data-values-file - --data-value profile=$PROFILE -f tanzu-cli/overlays/clusterdetails.yml -f tanzu-cli/values/values.yml --output-files tanzu-cli/values
+```
+
+Run: 
+
+```
+export PROFILE=run
+export AGENT_NAME=$(ytt --data-values-file tanzu-cli/values --data-value profile=$PROFILE  -f tanzu-cli/overlays/agentname.yml| yq .agent)
+tanzu tmc cluster kubeconfig get $AGENT_NAME -m eks -p eks | ytt --data-values-file - --data-value profile=$PROFILE -f tanzu-cli/overlays/clusterdetails.yml -f tanzu-cli/values/values.yml --output-files tanzu-cli/values
+```
+
+### create the tap solution
 
 ```
 export TAP_NAME=$(cat tanzu-cli/values/values.yml| yq .tap.name)
-ytt --data-values-file tanzu-cli/values -f tanzu-cli/tap/tap-template.yml > tap.yaml
+ytt --data-values-file tanzu-cli/values -f tanzu-cli/tap/tap-template.yml > generated/tap.yaml
+tanzu tmc tanzupackage tap create -n $TAP_NAME -f generated/tap.yaml
+```
+
+
+### Update the TAP soltuion
 
 
 
-tanzu tmc tanzupackage tap create -n $TAP_NAME -f tap.yaml
-rm tap.yaml
+```
+export TAP_NAME=$(cat tanzu-cli/values/values.yml| yq .tap.name)
+tanzu tmc tanzupackage tap get -n $TAP_NAME -o yaml | sed '1d' | ytt --data-values-file - --data-values-file tanzu-cli/values -f tanzu-cli/overlays/generation.yml -f tanzu-cli/tap/tap-template.yml > generated/tap.yaml
+
 ```

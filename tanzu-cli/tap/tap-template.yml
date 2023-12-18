@@ -50,6 +50,7 @@ spec:
       provisionerName: eks
       orgId: #@ data.values.orgId
     clusterUrl: #@ data.values.tap.profiles.build.clusterUrl
+    clusterCaCert: #@ data.values.tap.profiles.build.clusterCA
     inlineValues:
       ceip_policy_disclosed: true
       deployed_through_tmc: true
@@ -79,7 +80,7 @@ spec:
         default_parameters:
           supply_chain_service_account:
             secrets:
-            - github-pat
+            - github-secret
         gitops_install:
           ref: origin/main
           subPath: #@ "ns-provisioner/clusters/"+ data.values.clusters.build.name + "/namespaces"
@@ -96,7 +97,7 @@ spec:
           repository_name: #@ data.values.gitrepo_name
           repository_owner: #@ data.values.gitrepo_owner
           server_address: https://github.com/
-          ssh_secret: github-pat
+          ssh_secret: github-secret
         registry:
           repository: #@ data.values.tap.profiles.build.ecr.workload_repo
           server: #@ data.values.tap.profiles.build.ecr.server
@@ -108,59 +109,48 @@ spec:
       versionSelection:
         constraints: #@ data.values.tap.version
     tapProfile: build  
-  #!     shared:
-  #!       image_registry:
-  #!         project_path: dev.registry.tanzu.vmware.com/warroyo
-  #!         secret:
-  #!           name: dev-tanzu-registry
-  #!           namespace: default
-  #!     supply_chain: testing_scanning
-  #!     tap_telemetry:
-  #!       customer_entitlement_account_number: ""
-  #!   packageRef:
-  #!     packageMetadataName: tap.tanzu.vmware.com
-  #!     versionSelection:
-  #!       constraints: 1.7.0
-  #!   tapProfile: build
-  #! - clusterFullName:
-  #!     managementClusterName: costco-poc
-  #!     name: tap-run
-  #!     provisionerName: lab
-  #!   inlineValues:
-  #!     ceip_policy_disclosed: true
-  #!     deployed_through_tmc: true
-  #!     excluded_packages:
-  #!     - fluxcd.source.controller.tanzu.vmware.com
-  #!     namespace_provisioner:
-  #!       additional_sources:
-  #!       - git:
-  #!           ref: origin/main
-  #!           subPath: ns-provisioner/clusters/tap-run/config
-  #!           url: https://github.com/warroyo/tmc-tap
-  #!       controller: false
-  #!       default_parameters:
-  #!         supply_chain_service_account:
-  #!           secrets:
-  #!           - github-warroyo-secret
-  #!       gitops_install:
-  #!         ref: origin/main
-  #!         subPath: ns-provisioner/clusters/tap-run/namespaces
-  #!         url: https://github.com/warroyo/tmc-tap
-  #!     package_overlays:
-  #!     - name: cert-manager
-  #!       secrets:
-  #!       - name: cert-man-recursive-ns
-  #!     profile: run
-  #!     shared:
-  #!       ingress_domain: onprem.ct-tap.azure.warroyo.com
-  #!       ingress_issuer: letsencrypt-prod
-  #!     tap_telemetry:
-  #!       customer_entitlement_account_number: ""
-  #!   packageRef:
-  #!     packageMetadataName: tap.tanzu.vmware.com
-  #!     versionSelection:
-  #!       constraints: 1.7.0
-  #!   tapProfile: run  
+  - clusterFullName:
+      managementClusterName: eks
+      name: #@ run_agent
+      provisionerName: eks
+      orgId: #@ data.values.orgId
+    clusterUrl: #@ data.values.tap.profiles.run.clusterUrl
+    clusterCaCert: #@ data.values.tap.profiles.run.clusterCA
+    inlineValues:
+      ceip_policy_disclosed: true
+      deployed_through_tmc: true
+      excluded_packages:
+      - fluxcd.source.controller.tanzu.vmware.com
+      namespace_provisioner:
+        additional_sources:
+        - git:
+            ref: origin/main
+            subPath: #@ "ns-provisioner/clusters/"+ data.values.clusters.run.name + "/config"
+            url: #@ data.values.gitrepo
+        controller: false
+        default_parameters:
+          supply_chain_service_account:
+            secrets:
+            - github-secret
+        gitops_install:
+          ref: origin/main
+          subPath: #@ "ns-provisioner/clusters/"+ data.values.clusters.run.name + "/namespaces"
+          url: #@ data.values.gitrepo
+      package_overlays:
+      - name: cert-manager
+        secrets:
+          - name: cert-man-sa-arn
+      profile: run
+      shared:
+        ingress_domain: #@ data.values.tap.profiles.run.ingress_domain
+        ingress_issuer: #@ data.values.tap.profiles.run.ingress_issuer
+      tap_telemetry:
+        customer_entitlement_account_number: ""
+    packageRef:
+      packageMetadataName: tap.tanzu.vmware.com
+      versionSelection:
+        constraints: 1.7.0
+    tapProfile: run  
 type:
   kind: Solution
   package: vmware.tanzu.manage.v1alpha1.tanzupackage.tap.solution

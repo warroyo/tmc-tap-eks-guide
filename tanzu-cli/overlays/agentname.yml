@@ -1,0 +1,6 @@
+#@ load("@ytt:data", "data")
+
+#@ profile = data.values.profile
+#@ values = getattr(data.values.clusters, profile)
+
+agent: #@ "eks."+ values.credName + "." + values.region + "." + values.name

@@ -20,7 +20,7 @@ clusters:
       instanceType: c5.2xlarge
       diskSize: 125
       replicas: 3
-  build:  
+  build:
     credName: eks-warroyo2
     name: tap-build
     region: us-west-2
@@ -53,17 +53,23 @@ clusters:
       diskSize: 125
       replicas: 3
 tap:
-  version:  1.7.0
+  version: 1.7.0
   name: eks-tap
   profiles:
     view:
       ingress_domain: tap-view.tapmc.aws.warroyo.com
       ingress_issuer: letsencrypt-prod
     build:
-      clusterUrl: https://a5af4a592074a400d8bccd5977e61d8a-193629218.us-west-2.elb.amazonaws.com
       aws_workload_role_arn: arn:aws:iam::074754820263:role/tap-workload-tap-build
       aws_tbs_role_arn: arn:aws:iam::074754820263:role/tap-build-service-tap-build
       ecr:
         server: 074754820263.dkr.ecr.us-west-2.amazonaws.com
         workload_repo: tanzu-application-platform
         tbs_repo: tap-build-service
+      clusterCA: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ4VENDQVd1Z0F3SUJBZ0lRVGdyY00yVWM1OUZHdXEzV2lLSnZFVEFLQmdncWhrak9QUVFEQWpBeU1UQXcKTGdZRFZRUURFeWRRYVc1dWFYQmxaQ0JKYlhCbGNuTnZibUYwYVc5dUlGQnliM2g1SUZObGNuWnBibWNnUTBFdwpJQmNOTWpNeE1qRXpNVGcxTURVeFdoZ1BNakV5TXpFeE1Ua3hPRFUxTlRGYU1ESXhNREF1QmdOVkJBTVRKMUJwCmJtNXBjR1ZrSUVsdGNHVnljMjl1WVhScGIyNGdVSEp2ZUhrZ1UyVnlkbWx1WnlCRFFUQlpNQk1HQnlxR1NNNDkKQWdFR0NDcUdTTTQ5QXdFSEEwSUFCQll1UTdrWjhsUjkyR0h4b2JHbEJHdE95M25ZWEZ5YUYvWXlKbFAybjhnUQo1NDdCUGUxM0ZESnltZ2lSWThXR0xSdjZUYzhzS3lWckRWOVNWRGpidlUrallUQmZNQTRHQTFVZER3RUIvd1FFCkF3SUNoREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQWdZSUt3WUJCUVVIQXdFd0R3WURWUjBUQVFIL0JBVXcKQXdFQi96QWRCZ05WSFE0RUZnUVV4VEhDL1RrVVZIYXAzd08xcWRIYlIvOU8zZ3N3Q2dZSUtvWkl6ajBFQXdJRApTQUF3UlFJZ1dtRWJ6aHZiWGV4enZTMzgxNzAzN1NXc2VxRDBhUWZhSkFPazR1c0dxc29DSVFEU2o5dndIM0hiCk4vV0I1Sjh1azAwQ2I4NlpBQ3QzdVU5eG05RG4rVnFRM1E9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+      clusterUrl: https://a5af4a592074a400d8bccd5977e61d8a-193629218.us-west-2.elb.amazonaws.com
+    run:
+      clusterCA: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ4akNDQVd1Z0F3SUJBZ0lRVitpVmROd2F6WWRjM01LQk9ncHVuVEFLQmdncWhrak9QUVFEQWpBeU1UQXcKTGdZRFZRUURFeWRRYVc1dWFYQmxaQ0JKYlhCbGNuTnZibUYwYVc5dUlGQnliM2g1SUZObGNuWnBibWNnUTBFdwpJQmNOTWpNeE1qRXpNVGt4TnpBNVdoZ1BNakV5TXpFeE1Ua3hPVEl5TURsYU1ESXhNREF1QmdOVkJBTVRKMUJwCmJtNXBjR1ZrSUVsdGNHVnljMjl1WVhScGIyNGdVSEp2ZUhrZ1UyVnlkbWx1WnlCRFFUQlpNQk1HQnlxR1NNNDkKQWdFR0NDcUdTTTQ5QXdFSEEwSUFCS3lJNFA5RFIyTzJQV0F0SjAwKzVFNVZLRVhnWU45aWtrL1JmNHNVN3BaTQpCZG1ycHdXcnFVeVRUZFFCblcybzZPWTdSVEhFS0xvM3k4QjQ4dVNDYmNxallUQmZNQTRHQTFVZER3RUIvd1FFCkF3SUNoREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQWdZSUt3WUJCUVVIQXdFd0R3WURWUjBUQVFIL0JBVXcKQXdFQi96QWRCZ05WSFE0RUZnUVVuY0dCQjI2MzhORHEvNFUwY1NiVjY4QlN2cWt3Q2dZSUtvWkl6ajBFQXdJRApTUUF3UmdJaEFMc2VZWXRORFNLTWwrNEpLc2Z4OUs0N0luNDlsWmZjNnVZcUsrY1MyOTUzQWlFQTVWMGV0d3EyCkwvUHFRQVRDTEdmNi83VGx0OU4zMG1uOE56SXgzTVZtM1ZrPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+      clusterUrl: https://a47cf78c9c478429d934e68f6d4889c9-754898019.us-west-2.elb.amazonaws.com
+      ingress_domain: tap-run.tapmc.aws.warroyo.com
+      ingress_issuer: letsencrypt-prod

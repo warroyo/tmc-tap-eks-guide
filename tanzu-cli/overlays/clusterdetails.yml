@@ -1,0 +1,16 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ profile = data.values.profile
+
+#@overlay/match by=overlay.all, expects="1+"
+---
+tap:
+  #@overlay/match missing_ok=True
+  profiles:
+    #@yaml/text-templated-strings
+    (@= profile @): 
+      #@overlay/match missing_ok=True
+      clusterCA: #@ data.values.clusters[0].cluster["certificate-authority-data"]
+      #@overlay/match missing_ok=True
+      clusterUrl: #@ data.values.clusters[0].cluster.server
