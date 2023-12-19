@@ -1,6 +1,8 @@
-# TAP on EKS using TMC 
+# Tanzu Application Platform (TAP) on Amazon EKS using Tanzu Mission Control (TMC)
 
 This repo is an example of how to quickly get up and running in EKS with TAP using the Tanzu CLI for TMC. The goal of this repo is to simplify all of the pieces involved in standing up TAP down to some CLI commands. The goal of this is not to entirely script the process, but rather outline and document all of the individual commands needed to set up TAP in an opinionated way on EKS using TMC. This repo does not create an iterate cluster at this time. the current focus of this repo is on the outer loop.
+
+## Outer Loop Refresher
 
 ## What this does
 
