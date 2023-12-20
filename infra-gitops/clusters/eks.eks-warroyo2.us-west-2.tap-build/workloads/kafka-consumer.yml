@@ -1,0 +1,20 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  labels:
+    app.kubernetes.io/part-of: kafka-consumer
+    apps.tanzu.vmware.com/workload-type: server
+    apps.tanzu.vmware.com/has-tests: "true"
+  name: kafka-consumer
+  namespace: dev
+spec:
+  source:
+    git:
+      ref:
+        branch: main
+      url: https://github.com/warroyo/steeltoe-kafka-consumer
+  params:
+    - name: gitops_repository
+      value: https://github.com/warroyo/tmc-tap-quickstart
+    - name: gitops_branch
+      value: main

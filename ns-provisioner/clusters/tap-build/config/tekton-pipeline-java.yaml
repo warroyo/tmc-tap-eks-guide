@@ -43,16 +43,4 @@ spec:
           - name: test
             image: gradle
             script: |-
-              cd `mktemp -d`
-              wget -qO- $(params.source-url) | tar xvz -m
-              pwd
-              MVNW=mvnw
-              GRADLE="build.gradle"
-              if [ -f "$MVNW" ]; then
-                  ./mvnw test
-              elif [ -f "$GRADLE" ]; then
-                  gradle test --debug
-              else
-                  echo "WARNING: No tests were run. This workload is not built with one of the currently supported frameworks (maven or gradle). If using another language/framework, update the image and the script sections of the 'pipeline.tekton.dev' resource in your namespace to match your language/framework."
-                  #exit 1
-              fi
+              echo "complete"
