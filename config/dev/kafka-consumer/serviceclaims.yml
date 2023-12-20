@@ -1,0 +1,40 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+waitRules:
+- conditionMatchers:
+  - type: ServiceAvailable
+    status: "False"
+    failure: true
+  - type: ServiceAvailable
+    status: "True"
+    success: true
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: servicebinding.io/v1alpha3
+      kind: ServiceBinding
+---
+apiVersion: servicebinding.io/v1alpha3
+kind: ServiceBinding
+metadata:
+  name: kafka-consumer-kafka
+  annotations:
+    kapp.k14s.io/change-group: servicebinding.io/ServiceBindings
+  labels:
+    app.kubernetes.io/part-of: kafka-consumer
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: worker
+    kustomize.toolkit.fluxcd.io/name: cluster-gitops
+    kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+    app.kubernetes.io/component: run
+    carto.run/workload-name: kafka-consumer
+spec:
+  name: kafka
+  service:
+    apiVersion: services.apps.tanzu.vmware.com/v1alpha1
+    kind: ClassClaim
+    name: kafka-1
+  workload:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kafka-consumer
+
