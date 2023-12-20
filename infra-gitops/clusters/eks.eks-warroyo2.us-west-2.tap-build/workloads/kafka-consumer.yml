@@ -13,6 +13,7 @@ spec:
       ref:
         branch: main
       url: https://github.com/warroyo/steeltoe-kafka-consumer
+    subPath: consumer
   params:
     - name: gitops_repository
       value: https://github.com/warroyo/tmc-tap-quickstart
