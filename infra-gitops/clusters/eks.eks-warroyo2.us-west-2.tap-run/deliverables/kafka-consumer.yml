@@ -2,6 +2,7 @@ apiVersion: carto.run/v1alpha1
 kind: Deliverable
 metadata:
   name: kafka-consumer
+  namespace: dev
   labels:
     app.kubernetes.io/part-of: kafka-consumer
     apps.tanzu.vmware.com/has-tests: "true"
