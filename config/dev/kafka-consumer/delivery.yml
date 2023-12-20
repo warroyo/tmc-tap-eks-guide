@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    ootb.apps.tanzu.vmware.com/servicebinding-workload: "true"
+    kapp.k14s.io/change-rule: upsert after upserting servicebinding.io/ServiceBindings
+  labels:
+    app.kubernetes.io/part-of: kafka-consumer
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: server
+    kustomize.toolkit.fluxcd.io/name: cluster-gitops
+    kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+    app.kubernetes.io/component: run
+    carto.run/workload-name: kafka-consumer
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: run
+      app.kubernetes.io/part-of: kafka-consumer
+      apps.tanzu.vmware.com/has-tests: "true"
+      apps.tanzu.vmware.com/workload-type: server
+      carto.run/workload-name: kafka-consumer
+      kustomize.toolkit.fluxcd.io/name: cluster-gitops
+      kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+      tanzu.app.live.view: "true"
+      tanzu.app.live.view.application.flavours: steeltoe
+      tanzu.app.live.view.application.name: kafka-consumer
+  template:
+    metadata:
+      annotations:
+        apps.tanzu.vmware.com/correlationid: https://github.com/warroyo/steeltoe-kafka-consumer?sub_path=consumer
+        conventions.carto.run/applied-conventions: |-
+          appliveview-sample/app-live-view-appflavour-check
+          appliveview-sample/app-live-view-connector-steeltoe
+          appliveview-sample/app-live-view-appflavours-steeltoe
+          spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/app-live-view-appflavour-check
+        developer.conventions/target-containers: workload
+      labels:
+        app.kubernetes.io/component: run
+        app.kubernetes.io/part-of: kafka-consumer
+        apps.tanzu.vmware.com/has-tests: "true"
+        apps.tanzu.vmware.com/workload-type: server
+        carto.run/workload-name: kafka-consumer
+        kustomize.toolkit.fluxcd.io/name: cluster-gitops
+        kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+        tanzu.app.live.view: "true"
+        tanzu.app.live.view.application.flavours: steeltoe
+        tanzu.app.live.view.application.name: kafka-consumer
+    spec:
+      containers:
+      - image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/kafka-consumer-dev@sha256:67c730aab721b04a7b7c2b8cff198224072fdaec82b75677eae8c1d928c1c696
+        name: workload
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        securityContext:
+          runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-consumer
+  labels:
+    app.kubernetes.io/part-of: kafka-consumer
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: server
+    kustomize.toolkit.fluxcd.io/name: cluster-gitops
+    kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+    app.kubernetes.io/component: run
+    carto.run/workload-name: kafka-consumer
+spec:
+  selector:
+    app.kubernetes.io/component: run
+    app.kubernetes.io/part-of: kafka-consumer
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: server
+    carto.run/workload-name: kafka-consumer
+    kustomize.toolkit.fluxcd.io/name: cluster-gitops
+    kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+    tanzu.app.live.view: "true"
+    tanzu.app.live.view.application.flavours: steeltoe
+    tanzu.app.live.view.application.name: kafka-consumer
+  ports:
+  - targetPort: 8080
+    port: 8080
+    name: http
+
