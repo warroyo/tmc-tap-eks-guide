@@ -51,7 +51,7 @@ spec:
         tanzu.app.live.view.application.name: kafka-consumer
     spec:
       containers:
-      - image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/kafka-consumer-dev@sha256:64a8618df06c9e47933a5b1a5b224f6774eb66050ca379d623cec385ef1c753e
+      - image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/kafka-consumer-dev@sha256:8ad0941b2a9209f2356e0aa182b5c78ddb688e6239c5138c5ba5bbbe295b66de
         name: workload
         resources: {}
         securityContext:
