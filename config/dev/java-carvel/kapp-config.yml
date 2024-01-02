@@ -1,0 +1,50 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+rebaseRules:
+- path:
+  - metadata
+  - annotations
+  - serving.knative.dev/creator
+  type: copy
+  sources:
+  - new
+  - existing
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+- path:
+  - metadata
+  - annotations
+  - serving.knative.dev/lastModifier
+  type: copy
+  sources:
+  - new
+  - existing
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+waitRules:
+- resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+  conditionMatchers:
+  - type: Ready
+    status: "True"
+    success: true
+  - type: Ready
+    status: "False"
+    failure: true
+ownershipLabelRules:
+- path:
+  - spec
+  - template
+  - metadata
+  - labels
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+
