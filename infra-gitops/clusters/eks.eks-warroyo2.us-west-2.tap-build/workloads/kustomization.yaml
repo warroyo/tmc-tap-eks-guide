@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - java-web-app.yml
 - kafka-consumer.yml
+- java-web-app-carvel.yml
