@@ -1,0 +1,70 @@
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  name: java-carvel.dev.tap.20240103233239.0.0+build.19e0f38
+spec:
+  refName: java-carvel.dev.tap
+  version: 20240103233239.0.0+build.19e0f38
+  releaseNotes: |
+    Release v20240103233239.0.0+build.19e0f38 of package java-carvel.dev.tap
+  template:
+    spec:
+      fetch:
+      - imgpkgBundle:
+          image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/java-carvel-dev-bundle@sha256:ea86748692a6bd1e3d1eb09444598c1c29c6d000d0ce5058dcfc330c7157b6b0
+      template:
+      - ytt:
+          paths:
+          - .
+      - kbld:
+          paths:
+          - .imgpkg/images.yml
+          - '-'
+      deploy:
+      - kapp: {}
+  valuesSchema:
+    openAPIv3:
+      type: object
+      additionalProperties: false
+      properties:
+        workload_name:
+          title: Workload name
+          type: string
+          default: ""
+        replicas:
+          title: Replicas
+          type: integer
+          default: 1
+        port:
+          title: Port
+          type: integer
+          default: 8080
+        hostname:
+          title: Hostname
+          type: string
+          default: ""
+        cluster_issuer:
+          title: Cluster Issuer
+          type: string
+          default: tap-ingress-selfsigned
+        http_route:
+          type: object
+          additionalProperties: false
+          nullable: true
+          properties:
+            gateways:
+              type: array
+              items:
+                type: object
+                additionalProperties: false
+                properties:
+                  protocol:
+                    type: string
+                    default: ""
+                  name:
+                    type: string
+                    default: ""
+              default:
+              - protocol: https
+                name: default-gateway
+
