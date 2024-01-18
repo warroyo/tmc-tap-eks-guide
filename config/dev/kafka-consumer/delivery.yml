@@ -9,7 +9,7 @@ metadata:
   labels:
     app.kubernetes.io/part-of: kafka-consumer
     apps.tanzu.vmware.com/has-tests: "true"
-    apps.tanzu.vmware.com/workload-type: worker
+    apps.tanzu.vmware.com/workload-type: worker-hpa
     kustomize.toolkit.fluxcd.io/name: cluster-gitops
     kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
     app.kubernetes.io/component: run
@@ -20,7 +20,7 @@ spec:
       app.kubernetes.io/component: run
       app.kubernetes.io/part-of: kafka-consumer
       apps.tanzu.vmware.com/has-tests: "true"
-      apps.tanzu.vmware.com/workload-type: worker
+      apps.tanzu.vmware.com/workload-type: worker-hpa
       carto.run/workload-name: kafka-consumer
       kustomize.toolkit.fluxcd.io/name: cluster-gitops
       kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
@@ -42,7 +42,7 @@ spec:
         app.kubernetes.io/component: run
         app.kubernetes.io/part-of: kafka-consumer
         apps.tanzu.vmware.com/has-tests: "true"
-        apps.tanzu.vmware.com/workload-type: worker
+        apps.tanzu.vmware.com/workload-type: worker-hpa
         carto.run/workload-name: kafka-consumer
         kustomize.toolkit.fluxcd.io/name: cluster-gitops
         kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
@@ -57,4 +57,32 @@ spec:
         securityContext:
           runAsUser: 1000
       serviceAccountName: default
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: kafka-consumer-consumer-lag
+  labels:
+    app.kubernetes.io/part-of: kafka-consumer
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: worker-hpa
+    kustomize.toolkit.fluxcd.io/name: cluster-gitops
+    kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
+    app.kubernetes.io/component: run
+    carto.run/workload-name: kafka-consumer
+spec:
+  minReplicas: 1
+  maxReplicas: 9
+  metrics:
+  - type: External
+    external:
+      metric:
+        name: aws.kafka.sumoffsetlag
+      target:
+        averageValue: 30
+        type: AverageValue
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kafka-consumer
 

@@ -22,7 +22,7 @@ metadata:
   labels:
     app.kubernetes.io/part-of: kafka-consumer
     apps.tanzu.vmware.com/has-tests: "true"
-    apps.tanzu.vmware.com/workload-type: worker
+    apps.tanzu.vmware.com/workload-type: worker-hpa
     kustomize.toolkit.fluxcd.io/name: cluster-gitops
     kustomize.toolkit.fluxcd.io/namespace: tanzu-continuousdelivery-resources
     app.kubernetes.io/component: run
