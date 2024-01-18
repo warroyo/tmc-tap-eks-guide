@@ -3,7 +3,7 @@ kind: Workload
 metadata:
   labels:
     app.kubernetes.io/part-of: kafka-consumer
-    apps.tanzu.vmware.com/workload-type: worker
+    apps.tanzu.vmware.com/workload-type: worker-hpa
     apps.tanzu.vmware.com/has-tests: "true"
   name: kafka-consumer
   namespace: dev
@@ -25,3 +25,11 @@ spec:
       value: https://github.com/warroyo/tmc-tap-quickstart
     - name: gitops_branch
       value: main
+    - name: hpa
+      value:
+        name: consumer-lag
+        minReplicas: 1
+        maxReplicas: 9
+        metricName: aws.kafka.sumoffsetlag
+        averageValue: 30
+
