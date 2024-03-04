@@ -52,7 +52,7 @@ spec:
       - env:
         - name: JAVA_TOOL_OPTIONS
           value: -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/tanzu-java-web-app-dev@sha256:826382bcd5d7d753e0f6316c32da49e51dfe65a962f16a7b3b3e1270bec39ca2
+        image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/tanzu-java-web-app-dev@sha256:a3fa6cf554511328734711f5ee46327e5ef1368c1b7c4a072c2ad8c8800aea5f
         name: workload
         ports:
         - containerPort: 8080
