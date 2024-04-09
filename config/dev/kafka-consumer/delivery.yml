@@ -36,6 +36,7 @@ spec:
           appliveview-sample/app-live-view-connector-steeltoe
           appliveview-sample/app-live-view-appflavours-steeltoe
           spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/is-native-app-check
           spring-boot-convention/app-live-view-appflavour-check
         developer.conventions/target-containers: workload
       labels:
@@ -55,7 +56,14 @@ spec:
         name: workload
         resources: {}
         securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
           runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
       serviceAccountName: default
 ---
 apiVersion: autoscaling/v2
