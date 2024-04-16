@@ -32,10 +32,10 @@ spec:
       annotations:
         apps.tanzu.vmware.com/correlationid: https://github.com/warroyo/steeltoe-kafka-consumer?sub_path=consumer
         conventions.carto.run/applied-conventions: |-
-          appliveview-sample/app-live-view-appflavour-check
           appliveview-sample/app-live-view-connector-steeltoe
           appliveview-sample/app-live-view-appflavours-steeltoe
           spring-boot-convention/auto-configure-actuators-check
+          spring-boot-convention/is-native-app-check
           spring-boot-convention/app-live-view-appflavour-check
         developer.conventions/target-containers: workload
       labels:
@@ -51,11 +51,18 @@ spec:
         tanzu.app.live.view.application.name: kafka-consumer
     spec:
       containers:
-      - image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/kafka-consumer-dev@sha256:d1e14ba2701618fc17286f327059bda0d120d1cb29a975893267266facc05ca7
+      - image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/kafka-consumer-dev@sha256:b07a308de58053ad65ee5882ad2e359b919200627f58e0878811f02c276bc011
         name: workload
         resources: {}
         securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
           runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
       serviceAccountName: default
 ---
 apiVersion: autoscaling/v2
