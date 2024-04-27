@@ -24,6 +24,7 @@ spec:
         conventions.carto.run/applied-conventions: |-
           spring-boot-convention/auto-configure-actuators-check
           spring-boot-convention/is-native-app-check
+          spring-boot-convention/is-prometheus-enabled-check
           spring-boot-convention/spring-boot
           spring-boot-convention/spring-boot-graceful-shutdown
           spring-boot-convention/spring-boot-web
@@ -52,7 +53,7 @@ spec:
       - env:
         - name: JAVA_TOOL_OPTIONS
           value: -Dserver.port="8080" -Dserver.shutdown.grace-period="24s"
-        image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/tanzu-java-web-app-dev@sha256:c8037d0de81465f02f5f8aa204003da34e417bd84b0924b6fb89b1c7164f78d0
+        image: 074754820263.dkr.ecr.us-west-2.amazonaws.com/tanzu-application-platform/tanzu-java-web-app-dev@sha256:ae6358bec76f90008a03a86f23678a3bfeaf6664c6ebb5cbdf89242249387651
         name: workload
         ports:
         - containerPort: 8080
